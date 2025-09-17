@@ -7,7 +7,6 @@ metadata:
     policy.open-cluster-management.io/description: Instala operadores opcionales
     policy.open-cluster-management.io/standards: ''
   name: install-optional-operators
-  namespace: default
 spec:
   disabled: false
   remediationAction: inform

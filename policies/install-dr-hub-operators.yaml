@@ -7,7 +7,6 @@ metadata:
     policy.open-cluster-management.io/description: Instala operadores para DR en el cluster hub.
     policy.open-cluster-management.io/standards: ''
   name: install-dr-hub-operators
-  namespace: default
 spec:
   disabled: false
   remediationAction: inform

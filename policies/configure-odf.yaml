@@ -7,7 +7,6 @@ metadata:
     policy.open-cluster-management.io/description: Apply additional ODF configuration
     policy.open-cluster-management.io/standards: ''
   name: configure-odf
-  namespace: default
 spec:
   disabled: false
   remediationAction: enforce

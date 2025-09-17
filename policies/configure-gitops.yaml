@@ -7,7 +7,6 @@ metadata:
     policy.open-cluster-management.io/description: Configure hub Gitops
     policy.open-cluster-management.io/standards: ''
   name: configure-gitops
-  namespace: default
 spec:
   disabled: false
   remediationAction: inform

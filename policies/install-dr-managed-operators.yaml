@@ -2,7 +2,6 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: install-dr-managed-operators
-  namespace: default
   annotations:
     policy.open-cluster-management.io/categories: Operators
     policy.open-cluster-management.io/controls: DR-Persistence

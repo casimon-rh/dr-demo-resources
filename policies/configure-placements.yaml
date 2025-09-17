@@ -7,7 +7,6 @@ metadata:
     policy.open-cluster-management.io/description: Configure placement in hub cluster for Gitops.
     policy.open-cluster-management.io/standards: ''
   name: configure-placements
-  namespace: default
 spec:
   disabled: false
   remediationAction: inform
