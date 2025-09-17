@@ -1,0 +1,62 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: Configuration
+    policy.open-cluster-management.io/controls: 'Post-Install'
+    policy.open-cluster-management.io/description: Configure placement in hub cluster for Gitops.
+    policy.open-cluster-management.io/standards: ''
+  name: configure-placements
+  namespace: default
+spec:
+  disabled: false
+  remediationAction: inform
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: configure-placements
+        spec:
+          pruneObjectBehavior: None
+          remediationAction: inform
+          severity: medium
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta1
+                kind: Placement
+                metadata:
+                  name: default-placement
+                  namespace: openshift-gitops
+                spec:
+                  clusterSets:
+                    - default
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta2
+                kind: ManagedClusterSetBinding
+                metadata:
+                  name: default
+                  namespace: openshift-gitops
+                spec:
+                  clusterSet: default
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta1
+                kind: Placement
+                metadata:
+                  name: local-placement
+                  namespace: openshift-gitops
+                spec:
+                  clusterSets:
+                    - default
+                  numberOfClusters: 1
+                  predicates:
+                    - requiredClusterSelector:
+                        labelSelector:
+                          matchExpressions:
+                            - key: name
+                              operator: In
+                              values:
+                                - local-cluster

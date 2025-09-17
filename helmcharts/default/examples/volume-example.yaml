@@ -1,0 +1,38 @@
+replicaCount: 1
+
+# Default application image
+# "{{ ...repository }}/{{ .Chart.Name }}:{{ ...tag | default .Chart.AppVersion }}"
+image:
+  repository: registry.access.redhat.com
+  pullPolicy: IfNotPresent
+  tag: "latest"
+  overrideName: "nginx-124"
+  overrideNamespace: "ubi8"
+
+nameOverride: ""
+fullnameOverride: "test-nginx"
+
+command:
+  override: true
+  list:
+  - nginx
+  - '-g'
+  - '"daemon off;"'
+
+service:
+  type: ClusterIP
+  port: 8080
+
+route:
+  overrideEnvironment: "" # e.g. -developing, -qa
+  injectTimeout: false
+
+containerVolumes:
+  create: true
+  list:
+  - name: example-vol
+    accessModes:
+    - ReadWriteOnce
+    storageClass: ocs-storagecluster-ceph-rbd
+    size: 1Gi
+environment: []

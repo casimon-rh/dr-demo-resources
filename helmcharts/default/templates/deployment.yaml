@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "default.fullname" . }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "default.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "default.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.overrideNamespace | default .Release.Namespace }}/{{ .Values.image.overrideName | default (include "default.fullname" .) }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- with .Values.environment }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          
+          {{- if .Values.command.override }}
+          command:
+          {{- range $cmd := .Values.command.list}}
+            - {{ $cmd }}
+          {{- end }}
+          {{- end }}
+
+          {{- if .Values.containerVolumes.create }}
+          volumeMounts:
+          {{- range $vol := .Values.containerVolumes.list}}
+            - name: {{ $vol.name }}
+              mountPath: {{ $vol.path }}
+          {{- end }}
+          {{- end }}
+      {{- if .Values.containerVolumes.create }}
+      volumes:
+      {{- range $vol := .Values.containerVolumes.list }}
+        - name: {{ $vol.name }}
+          persistentVolumeClaim:
+            claimName: {{ $vol.name }}
+      {{- end }}
+      {{- end }}

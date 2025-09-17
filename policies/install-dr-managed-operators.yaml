@@ -1,0 +1,50 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: install-dr-managed-operators
+  namespace: default
+  annotations:
+    policy.open-cluster-management.io/categories: Operators
+    policy.open-cluster-management.io/controls: DR-Persistence
+    policy.open-cluster-management.io/description: Instala operadores para DR en los clusters administrados.
+    policy.open-cluster-management.io/standards: ""
+spec:
+  disabled: false
+  remediationAction: inform
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-oadp-operator
+        spec:
+          complianceType: musthave
+          remediationAction: enforce
+          severity: high
+          subscription:
+            name: oadp-operator
+            channel: stable-1.4
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+          upgradeApproval: Automatic
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-odf-operator
+        spec:
+          complianceType: musthave
+          operatorGroup:
+            name: openshift-storage
+            targetNamespaces:
+              - openshift-storage
+          remediationAction: enforce
+          severity: critical
+          subscription:
+            channel: stable-4.18
+            name: odf-operator
+            namespace: openshift-storage
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+          upgradeApproval: Automatic
+          versions: null

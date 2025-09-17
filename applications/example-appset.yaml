@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: Example
+  namespace: openshift-gitops
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: default-placement
+        requeueAfterSeconds: 180
+  template:
+    metadata:
+      labels:
+        velero.io/exclude-from-backup: 'true' # <- velero for acm backup
+      name: 'Example-{{name}}'
+    spec:
+      destination:
+        namespace: 'test-namespace'
+        server: '{{server}}'
+      project: default
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=false
+      sources:
+        - path: helmcharts/default
+          repoURL: 
+          targetRevision: main
+          helm: |
+            replicaCount: 1
+            image:
+              repository: registry.access.redhat.com
+              pullPolicy: IfNotPresent
+              tag: "latest"
+              overrideName: "nginx-124"
+              overrideNamespace: "ubi8"
+            fullnameOverride: "example"
+            command:
+              override: true
+              list:
+              - nginx
+              - '-g'
+              - '"daemon off;"'
+            service:
+              type: ClusterIP
+              port: 8080
+            containerVolumes:
+              create: true
+              list:
+              - name: example-vol
+                accessModes:
+                - ReadWriteOnce
+                storageClass: ocs-storagecluster-ceph-rbd
+                size: 1Gi
+            environment:
+            - name: server
+              value: "{{server}}"

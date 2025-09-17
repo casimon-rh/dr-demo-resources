@@ -1,0 +1,192 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: Configuration
+    policy.open-cluster-management.io/controls: 'Post-Install'
+    policy.open-cluster-management.io/description: Configure hub Gitops
+    policy.open-cluster-management.io/standards: ''
+  name: configure-gitops
+  namespace: default
+spec:
+  disabled: false
+  remediationAction: inform
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acm-gitops-config
+        spec:
+          pruneObjectBehavior: None
+          remediationAction: inform
+          severity: medium
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: openshift-gitops
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: apps.open-cluster-management.io/v1beta1
+                kind: GitOpsCluster
+                metadata:
+                  name: default
+                  namespace: openshift-gitops
+                spec:
+                  argoServer:
+                    argoNamespace: openshift-gitops
+                  placementRef:
+                    apiVersion: cluster.open-cluster-management.io/v1beta1
+                    kind: Placement
+                    name: default-placement
+
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: argoproj.io/v1beta1
+                kind: ArgoCD
+                metadata:
+                  name: openshift-gitops
+                  namespace: openshift-gitops
+                spec:
+                  # nodePlacement:
+                  #   nodeSelector:
+                  #     node-role.kubernetes.io/infra: ''
+                  #   tolerations:
+                  #     - effect: NoSchedule
+                  #       key: node-role.kubernetes.io/infra
+                  #       operator: Exists
+                  server:
+                    autoscale:
+                      enabled: false
+                    grpc:
+                      ingress:
+                        enabled: false
+                    ingress:
+                      enabled: false
+                    resources:
+                      limits:
+                        cpu: 500m
+                        memory: 256Mi
+                      requests:
+                        cpu: 125m
+                        memory: 128Mi
+                    route:
+                      enabled: true
+                    service:
+                      type: ''
+                  grafana:
+                    enabled: false
+                    ingress:
+                      enabled: false
+                    resources:
+                      limits:
+                        cpu: 500m
+                        memory: 256Mi
+                      requests:
+                        cpu: 250m
+                        memory: 128Mi
+                    route:
+                      enabled: false
+                  monitoring:
+                    enabled: false
+                  notifications:
+                    enabled: false
+                  prometheus:
+                    enabled: false
+                    ingress:
+                      enabled: false
+                    route:
+                      enabled: false
+                  initialSSHKnownHosts: {}
+                  sso:
+                    dex:
+                      openShiftOAuth: true
+                      resources:
+                        limits:
+                          cpu: 500m
+                          memory: 256Mi
+                        requests:
+                          cpu: 250m
+                          memory: 128Mi
+                    provider: dex
+                  applicationSet:
+                    resources:
+                      limits:
+                        cpu: '2'
+                        memory: 1Gi
+                      requests:
+                        cpu: 250m
+                        memory: 512Mi
+                    webhookServer:
+                      ingress:
+                        enabled: false
+                      route:
+                        enabled: false
+                  rbac:
+                    defaultPolicy: ''
+                    policy: |
+                      g, system:cluster-admins, role:admin
+                      g, cluster-admins, role:admin
+                    scopes: '[groups, name]'
+                  repo:
+                    resources:
+                      limits:
+                        cpu: '1'
+                        memory: 1Gi
+                      requests:
+                        cpu: 250m
+                        memory: 256Mi
+                  resourceExclusions: |
+                    - apiGroups:
+                      - tekton.dev
+                      clusters:
+                      - '*'
+                      kinds:
+                      - TaskRun
+                      - PipelineRun
+                  ha:
+                    enabled: false
+                    resources:
+                      limits:
+                        cpu: 500m
+                        memory: 256Mi
+                      requests:
+                        cpu: 250m
+                        memory: 128Mi
+                  tls:
+                    ca:
+                      configMapName: custom-ca
+                  redis:
+                    resources:
+                      limits:
+                        cpu: 500m
+                        memory: 256Mi
+                      requests:
+                        cpu: 250m
+                        memory: 128Mi
+                  resourceHealthChecks:
+                    - check: |
+                        hs = {}
+                        if obj.spec.disabled then
+                          hs.status = "Healthy"
+                          hs.message = "Policy Disabled"
+                        else
+                          hs.status = "Healthy"
+                          hs.message = "Policy Applied"
+                        end
+                        return hs
+                      group: policy.open-cluster-management.io
+                      kind: Policy
+                  controller:
+                    processors: {}
+                    resources:
+                      limits:
+                        cpu: '4'
+                        memory: 6Gi
+                      requests:
+                        cpu: 1
+                        memory: 4Gi
+                    sharding: {}

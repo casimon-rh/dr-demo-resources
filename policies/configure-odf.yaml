@@ -1,0 +1,80 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: Configuration
+    policy.open-cluster-management.io/controls: 'Post-Install'
+    policy.open-cluster-management.io/description: Apply additional ODF configuration
+    policy.open-cluster-management.io/standards: ''
+  name: configure-odf
+  namespace: default
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: configure-odf-extra
+        spec:
+          object-templates:
+          - complianceType: musthave
+            objectDefinition:
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: csi-cephfsplugin
+                namespace: openshift-storage
+              spec:
+                template:
+                  spec:
+                    tolerations:
+                    - effect: NoSchedule
+                      key: node.ocs.openshift.io/storage
+                      operator: Equal
+                      value: 'true'
+                    - effect: NoSchedule
+                      key: node-role.kubernetes.io/infra
+                      operator: Exists
+          - complianceType: musthave
+            objectDefinition:
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: csi-rbdplugin
+                namespace: openshift-storage
+              spec:
+                template:
+                  spec:
+                    tolerations:
+                    - effect: NoSchedule
+                      key: node.ocs.openshift.io/storage
+                      operator: Equal
+                      value: 'true'
+                    - effect: NoSchedule
+                      key: node-role.kubernetes.io/infra
+                      operator: Exists
+          pruneObjectBehavior: None
+          remediationAction: enforce
+          severity: low
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: odf-managedcluster-config
+        spec:
+          pruneObjectBehavior: None
+          remediationAction: inform
+          severity: medium
+          object-templates:
+          - complianceType: musthave
+            objectDefinition:
+              kind: ConfigMap
+              apiVersion: v1
+              metadata:
+                name: rook-ceph-operator-config
+                namespace: openshift-storage
+              data:
+                CSI_ENABLE_OMAP_GENERATOR: 'true'
+                CSI_ENABLE_VOLUME_REPLICATION: 'true'
