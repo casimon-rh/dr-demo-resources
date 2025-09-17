@@ -25,5 +25,5 @@ spec:
             name: web-terminal
             source: redhat-operators
             sourceNamespace: openshift-marketplace
-          upgradeApproval: None
+          upgradeApproval: Automatic
           versions: null
