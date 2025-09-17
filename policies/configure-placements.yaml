@@ -26,36 +26,36 @@ spec:
                 apiVersion: cluster.open-cluster-management.io/v1beta1
                 kind: Placement
                 metadata:
-                  name: default-placement
+                  name: acm-placement
                   namespace: openshift-gitops
                 spec:
                   clusterSets:
-                    - default
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: cluster.open-cluster-management.io/v1beta2
-                kind: ManagedClusterSetBinding
-                metadata:
-                  name: default
-                  namespace: openshift-gitops
-                spec:
-                  clusterSet: default
+                    - acm
             - complianceType: musthave
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1beta1
                 kind: Placement
                 metadata:
-                  name: local-placement
+                  name: managed-placement
                   namespace: openshift-gitops
                 spec:
                   clusterSets:
-                    - default
-                  numberOfClusters: 1
-                  predicates:
-                    - requiredClusterSelector:
-                        labelSelector:
-                          matchExpressions:
-                            - key: name
-                              operator: In
-                              values:
-                                - local-cluster
+                    - managed
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta2
+                kind: ManagedClusterSetBinding
+                metadata:
+                  name: managed
+                  namespace: openshift-gitops
+                spec:
+                  clusterSet: managed
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta2
+                kind: ManagedClusterSetBinding
+                metadata:
+                  name: acm
+                  namespace: openshift-gitops
+                spec:
+                  clusterSet: acm
