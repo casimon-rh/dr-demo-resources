@@ -21,8 +21,23 @@ spec:
           remediationAction: enforce
           severity: high
           subscription:
-            name: oadp-operator
+            name: redhat-oadp-operator
             channel: stable-1.4
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+          upgradeApproval: Automatic
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-odr-operator
+        spec:
+          complianceType: musthave
+          remediationAction: enforce
+          severity: high
+          subscription:
+            name: odr-cluster-operator
+            channel: stable-4.18
             source: redhat-operators
             sourceNamespace: openshift-marketplace
           upgradeApproval: Automatic

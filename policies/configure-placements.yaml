@@ -81,12 +81,3 @@ spec:
                   namespace: openshift-gitops
                 spec:
                   clusterSet: managed
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: cluster.open-cluster-management.io/v1beta2
-                kind: ManagedClusterSetBinding
-                metadata:
-                  name: acm
-                  namespace: openshift-gitops
-                spec:
-                  clusterSet: acm
