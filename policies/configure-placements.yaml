@@ -36,6 +36,16 @@ spec:
                 apiVersion: cluster.open-cluster-management.io/v1beta1
                 kind: Placement
                 metadata:
+                  name: acm-placement
+                  namespace: acm-policies
+                spec:
+                  clusterSets:
+                    - acm
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta1
+                kind: Placement
+                metadata:
                   name: managed-placement
                   namespace: openshift-gitops
                 spec:
@@ -43,10 +53,31 @@ spec:
                     - managed
             - complianceType: musthave
               objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta1
+                kind: Placement
+                metadata:
+                  name: managed-placement
+                  namespace: acm-policies
+                spec:
+                  clusterSets:
+                    - managed
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1beta1
+                kind: Placement
+                metadata:
+                  name: global-placement
+                  namespace: acm-policies
+                spec:
+                  clusterSets:
+                    - managed
+                    - acm
+            - complianceType: musthave
+              objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1beta2
                 kind: ManagedClusterSetBinding
                 metadata:
-                  name: managed
+                  name: local-placement
                   namespace: openshift-gitops
                 spec:
                   clusterSet: managed

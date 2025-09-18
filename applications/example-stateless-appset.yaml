@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: example
+  name: example-stateless
   namespace: openshift-gitops
 spec:
   generators:
@@ -9,13 +9,13 @@ spec:
         configMapRef: acm-placement
         labelSelector:
           matchLabels:
-            cluster.open-cluster-management.io/placement: example-placement
+            cluster.open-cluster-management.io/placement: managed-placement
         requeueAfterSeconds: 180
   template:
     metadata:
       labels:
         velero.io/exclude-from-backup: 'true'
-      name: 'example-{{name}}'
+      name: 'example-stateless-{{name}}'
     spec:
       destination:
         namespace: default
@@ -31,7 +31,7 @@ spec:
                 tag: "latest"
                 overrideName: "nginx-124"
                 overrideNamespace: "ubi8"
-              fullnameOverride: "example"
+              fullnameOverride: "example-stateless"
               command:
                 override: true
                 list:
@@ -41,19 +41,8 @@ spec:
               service:
                 type: ClusterIP
                 port: 8080
-              containerVolumes:
-                create: true
-                list:
-                - name: example-vol
-                  accessModes:
-                  - ReadWriteOnce
-                  storageClass: ocs-storagecluster-ceph-rbd
-                  size: 1Gi
-                  path: /opt/example
-              environment:
-              - name: server
-                value: "{{server}}"
           path: helmcharts/default
           repoURL: 'https://github.com/casimon-rh/dr-demo-resources'
           targetRevision: main
-      syncPolicy: {}
+      syncPolicy:
+        automated: {}
