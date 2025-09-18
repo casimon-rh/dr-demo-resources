@@ -1,0 +1,24 @@
+{
+  "CN": "clusters.pvctz.sandbox149.opentlc.com",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+  {
+    "C": "MX",
+    "L": "Mexico City",
+    "O": "Red Hat",
+    "OU": "Red Hat Demo Host",
+    "ST": "Mexico City"
+  }
+  ],
+  "hosts": [
+    "api.cluster1.pvctz.sandbox149.opentlc.com",
+    "api.cluster2.pvctz.sandbox149.opentlc.com",
+    "*.apps.cluster1.pvctz.sandbox149.opentlc.com",
+    "*.apps.cluster2.pvctz.sandbox149.opentlc.com",
+    "api.cluster-pvctz.pvctz.sandbox149.opentlc.com",
+    "*.apps.cluster-pvctz.pvctz.sandbox149.opentlc.com"
+  ]
+}

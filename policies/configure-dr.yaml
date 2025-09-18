@@ -1,0 +1,58 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: Configuration
+    policy.open-cluster-management.io/controls: 'DR-Persistence'
+    policy.open-cluster-management.io/description: Observe DR configuration
+    policy.open-cluster-management.io/standards: ''
+  name: configure-dr
+spec:
+  disabled: false
+  remediationAction: inform
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: configure-dr
+        spec:
+          pruneObjectBehavior: None
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: ramendr.openshift.io/v1alpha1
+                kind: DRPolicy
+                metadata:
+                  labels:
+                    cluster.open-cluster-management.io/backup: ramen
+                spec:
+                  drClusters:
+                    - cluster1
+                    - cluster2
+                  replicationClassSelector: {}
+                  schedulingInterval: 5m
+                  volumeGroupSnapshotClassSelector: {}
+                  volumeSnapshotClassSelector: {}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: ramendr.openshift.io/v1alpha1
+                kind: DRCluster
+                metadata:
+                  labels:
+                    cluster.open-cluster-management.io/backup: ramen
+                  name: cluster1
+                spec:
+                  s3ProfileName: s3profile-cluster1-ocs-storagecluster
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: ramendr.openshift.io/v1alpha1
+                kind: DRCluster
+                metadata:
+                  labels:
+                    cluster.open-cluster-management.io/backup: ramen
+                  name: cluster2
+                spec:
+                  s3ProfileName: s3profile-cluster1-ocs-storagecluster

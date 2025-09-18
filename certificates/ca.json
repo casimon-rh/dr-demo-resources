@@ -1,0 +1,16 @@
+{
+  "CN": "Red Hat Demo Root CA",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+  {
+    "C": "MX",
+    "L": "Mexico City",
+    "O": "Red Hat",
+    "OU": "Red Hat Demo CA",
+    "ST": "Mexico City"
+  }
+  ]
+}

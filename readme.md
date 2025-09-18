@@ -10,18 +10,32 @@
 
 ## Technologies & versions
 
-- Red Hat OpenShift 4.18
-- Red Hat Advanced Cluster Management for Kubernetes
-- Red Hat OpenShift Data Foundation 4.18
-- Red Hat OpenShift GitOps
-- Red Hat OpenShift APIs for Data Foundation
+- Red Hat OpenShift 4.18.23
+- Red Hat Advanced Cluster Management for Kubernetes 2.14.0
+- Red Hat OpenShift Data Foundation 4.18.10
+- Red Hat OpenShift GitOps 1.17.1
+- Red Hat OpenShift APIs for Data Foundation 1.4.5
 - Volsync
-- Submariner
+- Submariner 0.21.0
 
 ## Files
-```.
+```   tree .
+.
 ├── applications
-│   └── example-appset.yaml
+│   ├── example-appset.yaml
+│   └── example-stateless-appset.yaml
+├── certificates
+│   ├── ca-key.pem
+│   ├── ca.csr
+│   ├── ca.json
+│   ├── ca.pem
+│   ├── cfssl.json
+│   ├── hosts-key.pem
+│   ├── hosts.csr
+│   ├── hosts.json
+│   ├── hosts.pem
+│   ├── readme.md
+│   └── script.sh
 ├── helmcharts
 │   └── default
 │       ├── Chart.yaml
@@ -37,6 +51,7 @@
 ├── imgs
 │   └── Architecture.jpg
 ├── policies
+│   ├── configure-dr.yaml
 │   ├── configure-gitops.yaml
 │   ├── configure-odf.yaml
 │   ├── configure-placements.yaml
@@ -45,4 +60,4 @@
 │   └── install-optional-operators.yaml
 └── readme.md
 
-8 directories, 17 files```
+9 directories, 30 files```
