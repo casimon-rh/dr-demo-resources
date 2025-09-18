@@ -55,4 +55,4 @@ spec:
                     cluster.open-cluster-management.io/backup: ramen
                   name: cluster2
                 spec:
-                  s3ProfileName: s3profile-cluster1-ocs-storagecluster
+                  s3ProfileName: s3profile-cluster2-ocs-storagecluster
